@@ -16,18 +16,25 @@ MongoClient.connect(connectionUrl, {useNewUrlParser:true}, (error, client) => {
   // console.log('connected correctly')
   const db = client.db(databaseName);
 
-
-  db.collection('tasks').updateMany({
-    completed:false
-  }, {
-    $set:{
-      completed:true,
-    }
+  db.collection('tasks').deleteOne({
+    description:"complete node basics",
   }).then(result => {
     console.log(result);
   }).catch(error => {
     console.log(error);
   })
+
+  // db.collection('tasks').updateMany({
+  //   completed:false
+  // }, {
+  //   $set:{
+  //     completed:true,
+  //   }
+  // }).then(result => {
+  //   console.log(result);
+  // }).catch(error => {
+  //   console.log(error);
+  // })
 
 
   // db.collection('users').updateOne({
