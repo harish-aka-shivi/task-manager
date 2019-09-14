@@ -28,9 +28,10 @@ const User = mongoose.model('User', {
     type:String,
     required:true,
     trim:true,
+    minlength:7,
     validate(value) {
-      if(value.length < 6) {
-        throw new Error("length of string should be greater than 6");
+      if(value.toLowerCase().includes('password')) {
+        throw new Error("Password cannot contain password");
       } else if(value.includes("password")) {
         throw new Error("It must not contain password");
       }
@@ -54,21 +55,33 @@ const User = mongoose.model('User', {
 
 // joey.save()
 
+// const me = new User({
+//   name:'harish',
+//   age:21,
+//   email:'r.shivi@yahoo.com',
+//   completed:false,
+//   password:'virtual1'
+// })
+
 const Task = mongoose.model('Task', {
   description:{
     type:String,
+    required:true,
+
   },
   completed:{
     type:Boolean,
+    required:false,
+    default:false,
   }
 });
 
-const learnNode = new Task({
-  description:'Complete the nodejs course',
-  completed:false,
+
+const task= new Task({
+  description:'complete mongo',
 })
 
-learnNode.save().then(result => {
+task.save().then(result => {
   console.log(result);
 }).catch(error => {
   console.log(error);
