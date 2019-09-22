@@ -9,9 +9,12 @@ app.use(express.json());
 app.use(userRouter);
 app.use(taskRouter);
 
-
-
-
 app.listen(port, () => {
   console.log('server is up on port ' + port);
-})  
+});
+
+// const bcrypt = require('bcryptjs');
+
+// const myFunction = async () => {
+
+// }
