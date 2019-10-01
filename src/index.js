@@ -4,7 +4,7 @@ const userRouter = require('./routers/user');
 const taskRouter = require('./routers/task');
 const app = express();
 const auth = require('./middleware/auth');
-const port = process.env.PORT || 3002;
+const port = process.env.PORT || 3001;
 
 // app.use((req, res, next) => {
 //   res.status(503).send("site is currently down");
