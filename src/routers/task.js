@@ -79,16 +79,35 @@ router.get('/tasks/:id', auth, async (req,res) => {
 })
 
 //GET /tasks?completed=true
+//GET /tasks?limit=3&skip=3
+//GET /tasks?sortby=createdAt:asc
+
 router.get('/tasks', auth ,async (req,res) => {
   try {
     // const tasks = await Task.find({owner:req.user._id});  
     // there is an alternative way, 
-    
+    const match = {};
+
+    if(req.query.completed) {
+      match.completed = req.query.completed === 'true';
+    }
+
+    const sort = {};
+
+    if(req.query.sortBy) {
+      const parts = req.query.sortBy.split(':');
+
+      sort[parts[0]] = parts[1] === 'asc' ? 1 : -1;
+    }
+
     // await req.user.populate('tasks').execPopulate();
     await req.user.populate({
       path:'tasks',
-      match:{
-        completed:false,
+      match,
+      options:{
+        limit:parseInt(req.query.limit),
+        skip:parseInt(req.query.skip),
+        sort,
       }
     }).execPopulate();
     
