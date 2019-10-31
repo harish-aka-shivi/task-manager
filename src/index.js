@@ -8,9 +8,17 @@ const port = process.env.PORT || 3001;
 
 const multer = require('multer');
 const upload = multer({
-  dest:'images',
+  dest:'uploads',
   limits:{
     fileSize:1000000
+  },
+  fileFilter(req,file,cb) {
+    // console.log(req,file);
+    // if(!file.originalname.endsWith('.pdf')) {
+    if(!file.originalname.match(/\.(doc|docx)$/)) {
+      return cb(new Error('please upload a word document'));
+    }
+    cb(undefined, true)
   }
 })
 // app.use((req, res, next) => {
@@ -18,10 +26,10 @@ const upload = multer({
   // next();
 // })
 
-app.post('/upload', multer({
-  dest:'images'
-}).single('upload') ,async (req, res) => {
+app.post('/upload', upload.single('upload') ,async (req, res) => {
   res.send();
+},(error,req,res,next) => {
+  res.status(400).send({ error: error.message})
 })
 
 
