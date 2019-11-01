@@ -3,6 +3,8 @@ const User = require('../models/user');
 const auth = require('../middleware/auth');
 const router = new express.Router();
 const multer = require('multer');
+const sharp = require('sharp');
+const { sendWelcomeEmail, sendGoodbyeEmail } = require('../emails/account');
 
 router.post('/users/logout', auth, async (req,res) => {
   try {
@@ -53,11 +55,12 @@ router.delete('/users/me', auth,  async (req,res) => {
     // if(!user) {
     //   return res.status(404).send('User not found');
     // }
-
+    sendGoodbyeEmail(req.user.email, req.user.name);
     req.user.remove();
     res.send(req.user);
 
   } catch(error) {
+    console.log(err)
     res.status(500).send(error);
   }
 })
@@ -134,6 +137,7 @@ router.post('/users', async (req, res) => {
   
   try {
     await user.save();
+    sendWelcomeEmail(user.email, user.name);
     const token = await user.generateAuthToken();
     res.send({user, token});
   } catch(error) {
@@ -170,7 +174,9 @@ router.post('/users/me/avatar',
   async (req, res) => {
     try {
       // console.log(req.file);
-      req.user.avatar = req.file.buffer;
+      // req.user.avatar = req.file.buffer;
+      const buffer = await sharp(req.file.buffer).resize({width:250, height:250}).png().toBuffer();
+      req.user.avatar = buffer;
       await req.user.save();
       res.send();
     } catch (error) {
@@ -211,7 +217,7 @@ router.get('/users/:id/avatar', async (req,res) => {
       throw new Error();
     }
 
-    res.set('Content-Type', 'image/jpg');
+    res.set('Content-Type', 'image/png');
     res.send(user.avatar)
   } catch(e) {
     res.status(404).send();
