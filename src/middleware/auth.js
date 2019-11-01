@@ -5,7 +5,7 @@ const auth = async(req, res, next) => {
   try {
     // console.log('in middleware')
     const token = req.header('Authorization').replace('Bearer ', '');
-    const decoded = jwt.verify(token,"secretKey");
+    const decoded = jwt.verify(token,process.env.JSON_WEB_SECRET_KEY);
     // console.log(decoded);
     const user = await User.findOne({_id:decoded._id, 'tokens.token':token});
 
@@ -14,11 +14,11 @@ const auth = async(req, res, next) => {
     }
     req.token = token;
     req.user = user; // passing the data to route to prevent extra computation. 
+    next();
   } catch (error) {
     res.status(401).send({"error": "please authenticate"}); 
   }
 
-  next();
 }
 
 module.exports = auth;
