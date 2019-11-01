@@ -60,7 +60,7 @@ router.delete('/users/me', auth,  async (req,res) => {
     res.send(req.user);
 
   } catch(error) {
-    console.log(err)
+    // console.log(err)
     res.status(500).send(error);
   }
 })
