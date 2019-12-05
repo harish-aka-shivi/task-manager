@@ -1,10 +1,12 @@
 const express = require('express');
 const User = require('../models/user');
 const auth = require('../middleware/auth');
-const router = new express.Router();
 const multer = require('multer');
 const sharp = require('sharp');
 const { sendWelcomeEmail, sendGoodbyeEmail } = require('../emails/account');
+
+const router = new express.Router();
+
 
 router.post('/users/logout', auth, async (req,res) => {
   try {
